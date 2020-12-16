@@ -8,7 +8,7 @@ public interface FluidHolder {
 	/**
 	 * @return Returns the maximum amount of fluid that can be stored
 	 */
-	Fraction getMaxFluidVolume(FluidType type);
+	Fraction getMaxFluidVolume(FluidType type, Side side);
 
 	/**
 	 * @return Returns the rate of transfer of this fluid holder

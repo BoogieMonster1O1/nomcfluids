@@ -8,7 +8,10 @@ import java.util.Objects;
 @SuppressWarnings({"CopyConstructorMissesField", "unused"})
 public class Fraction implements Comparable<Fraction> {
 	public static final Fraction ZERO = Fraction.of(0, 0, 1);
+	public static final Fraction ONE_THIRD = Fraction.of(0, 1,3);
+	public static final Fraction HALF = Fraction.of(0, 1, 2);
 	public static final Fraction ONE = Fraction.of(1, 0, 1);
+	public static final Fraction ONE_THOUSAND = Fraction.of(1000, 0, 1);
 	public static final Fraction MAX_VALUE = Fraction.of(Long.MAX_VALUE, 0, 1);
 
 	protected long whole;
@@ -323,7 +326,7 @@ public class Fraction implements Comparable<Fraction> {
 	 *
 	 * @return a new immutable {@code Fraction} instance if this is a {@code MutableFraction}, or this instance otherwise.
 	 */
-	public Fraction toImmutable() {
+	Fraction toImmutable() {
 		return this;
 	}
 
@@ -386,5 +389,179 @@ public class Fraction implements Comparable<Fraction> {
 
 	public static Fraction of(long whole) {
 		return new Fraction(whole);
+	}
+
+	@SuppressWarnings({"unused", "UnusedReturnValue"})
+	private static final class MutableFraction extends Fraction {
+		public MutableFraction() {
+			super();
+		}
+
+		public MutableFraction(long whole) {
+			super(whole, 0, 1);
+		}
+
+		public MutableFraction(long numerator, long divisor) {
+			super(numerator, divisor);
+		}
+
+		public MutableFraction(long whole, long numerator, long divisor) {
+			super(whole, numerator, divisor);
+		}
+
+		public MutableFraction(Fraction template) {
+			super(template.whole(), template.numerator(), template.divisor());
+		}
+
+		public MutableFraction set(long whole) {
+			return this.set(whole, 0, 1);
+		}
+
+		public MutableFraction set(long numerator, long divisor) {
+			this.validate(0, numerator, divisor);
+			this.whole = numerator / divisor;
+			this.numerator = numerator - this.whole * divisor;
+			this.divisor = divisor;
+			return this;
+		}
+
+		public MutableFraction set(long whole, long numerator, long divisor) {
+			this.validate(whole, numerator, divisor);
+			this.whole = whole;
+			this.numerator = numerator;
+			this.divisor = divisor;
+			return this;
+		}
+
+		public MutableFraction set(Fraction template) {
+			this.whole = template.whole();
+			this.numerator = template.numerator();
+			this.divisor = template.divisor();
+			return this;
+		}
+
+		public MutableFraction add(Fraction val) {
+			return this.add(val.whole(), val.numerator(), val.divisor());
+		}
+
+		public MutableFraction add(long whole) {
+			return this.add(whole, 0, 1);
+		}
+
+		public MutableFraction add(long numerator, long divisor) {
+			return this.add(0, numerator, divisor);
+		}
+
+		public MutableFraction add(long whole, long numerator, long divisor) {
+			this.validate(whole, numerator, divisor);
+			this.whole += whole;
+
+			if (Math.abs(numerator) >= divisor) {
+				final long w = numerator / divisor;
+				this.whole += w;
+				numerator -= w * divisor;
+			}
+
+			final long n = this.numerator * divisor + numerator * this.divisor;
+
+			if (n == 0) {
+				this.numerator = 0;
+				this.divisor = 1;
+			} else {
+				this.numerator = n;
+				this.divisor = divisor * this.divisor;
+				this.normalize();
+			}
+
+			return this;
+		}
+
+		public MutableFraction multiply(Fraction val) {
+			return this.multiply(val.whole(), val.numerator(), val.divisor());
+		}
+
+		public MutableFraction multiply(long whole) {
+			this.numerator *= whole;
+			this.whole *= whole;
+			this.normalize();
+			return this;
+		}
+
+		public MutableFraction multiply(long numerator, long divisor) {
+			return this.multiply(0, numerator, divisor);
+		}
+
+		public MutableFraction multiply(long whole, long numerator, long divisor) {
+			if (numerator == 0) {
+				return this.multiply(whole);
+			}
+
+			this.validate(whole, numerator, divisor);
+
+			// normalize fractional part
+			if (Math.abs(numerator) >= divisor) {
+				final long w = numerator / divisor;
+				whole += w;
+				numerator -= w * divisor;
+			}
+
+			// avoids a division later to factor out common divisor from the two steps that follow this
+			final long numeratorProduct = numerator * this.numerator;
+			this.numerator *= divisor;
+			numerator *= this.divisor;
+
+			this.divisor *= divisor;
+			this.numerator = this.numerator * whole + numerator * this.whole + numeratorProduct;
+			this.whole *= whole;
+			this.normalize();
+
+			return this;
+		}
+
+		public MutableFraction subtract(Fraction val) {
+			return this.add(-val.whole(), -val.numerator(), val.divisor());
+		}
+
+		public MutableFraction subtract(long whole) {
+			return this.add(-whole, 0, 1);
+		}
+
+		public MutableFraction subtract(long numerator, long divisor) {
+			return this.add(0, -numerator, divisor);
+		}
+
+		public MutableFraction negate() {
+			this.numerator = -this.numerator;
+			this.whole = -this.whole;
+			return this;
+		}
+
+		/**
+		 * Rounds down to multiple of divisor if not already divisible by it.
+		 *
+		 * @param divisor Desired multiple
+		 */
+		public void roundDown(long divisor) {
+			if(this.divisor != divisor) {
+				this.set(this.whole, this.numerator * divisor / this.divisor, divisor);
+			}
+		}
+
+		public static MutableFraction of(long whole, long numerator, long divisor) {
+			return new MutableFraction(whole, numerator, divisor);
+		}
+
+		public static MutableFraction of(long numerator, long divisor) {
+			return new MutableFraction(numerator, divisor);
+		}
+
+		public static MutableFraction of(long whole) {
+			return new MutableFraction(whole);
+		}
+
+		@Override
+		Fraction toImmutable() {
+			return Fraction.of(this.whole(), this.numerator(), this.divisor());
+		}
 	}
 }

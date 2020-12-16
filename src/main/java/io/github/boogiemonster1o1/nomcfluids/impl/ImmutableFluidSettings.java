@@ -14,7 +14,7 @@ public class ImmutableFluidSettings implements FluidSettings {
 	private final int temperature;
 	private final float density;
 
-	public ImmutableFluidSettings(Color color, int luminance, int temperature, float density) {
+	ImmutableFluidSettings(Color color, int luminance, int temperature, float density) {
 		this.color = color;
 		this.luminance = luminance;
 		this.temperature = temperature;
@@ -113,6 +113,15 @@ public class ImmutableFluidSettings implements FluidSettings {
 				throw new IllegalStateException("Missing luminance!");
 			}
 			return new ImmutableFluidSettings(this.color, this.luminance, this.temperature, this.density);
+		}
+
+		@Override
+		public String toString() {
+			return "ImmutableFluidSettings.Builder{" + "color=" + this.color +
+					", luminance=" + this.luminance +
+					", temperature=" + this.temperature +
+					", density=" + this.density +
+					'}';
 		}
 	}
 }

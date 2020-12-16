@@ -8,11 +8,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import io.github.boogiemonster1o1.nomcfluids.api.store.FluidStorage;
-import io.github.boogiemonster1o1.nomcfluids.api.store.FluidStorageContext;
+import io.github.boogiemonster1o1.nomcfluids.api.store.FluidStorageHandler;
 
-/**
- * Helper class for
- */
 public class FluidHandlers {
 	private static final HashMap<Predicate<Object>, Function<Object, FluidStorage>> HOLDERS = new LinkedHashMap<>();
 
@@ -24,23 +21,23 @@ public class FluidHandlers {
 		HOLDERS.put(supports, holderFunction);
 	}
 
-	public static FluidStorageContext of(Object object, FluidType fluidType) {
-		return ofNullable(object, fluidType).orElseThrow(() -> new RuntimeException(String.format("object type (%s) not supported", object.getClass().getName())));
+	public static FluidStorageHandler of(Object object, FluidType fluidType) {
+		return optionalOf(object, fluidType).orElseThrow(() -> new RuntimeException(String.format("object type (%s) not supported", object.getClass().getName())));
 	}
 
-	public static Optional<FluidStorageContext> ofNullable(Object object, FluidType fluidType) {
+	public static Optional<FluidStorageHandler> optionalOf(Object object, FluidType fluidType) {
 		if (object == null) {
 			return Optional.empty();
 		}
 		for (Map.Entry<Predicate<Object>, Function<Object, FluidStorage>> holder : HOLDERS.entrySet()) {
 			if (holder.getKey().test(object)) {
-				return Optional.of(new FluidStorageContext(holder.getValue().apply(object), fluidType));
+				return Optional.of(new FluidStorageHandler(holder.getValue().apply(object), fluidType));
 			}
 		}
 		return Optional.empty();
 	}
 
-	public static boolean valid(Object object){
+	public static boolean valid(Object object) {
 		for (Predicate<Object> predicate : HOLDERS.keySet()) {
 			if (predicate.test(object)) {
 				return true;

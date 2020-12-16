@@ -9,4 +9,6 @@ public interface FluidStorage extends FluidHolder {
 	Fraction getStored(FluidType type, Side side);
 
 	Result setStored(FluidType type, Side side, Fraction amount);
+
+	boolean isValid(FluidType type);
 }

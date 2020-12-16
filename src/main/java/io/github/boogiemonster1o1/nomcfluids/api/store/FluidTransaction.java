@@ -4,13 +4,13 @@ import java.util.function.BooleanSupplier;
 
 import io.github.boogiemonster1o1.nomcfluids.api.fraction.Fraction;
 
-public final class FluidTransaction {
-	private final FluidStorageContext source;
-	private final FluidStorageContext target;
+public class FluidTransaction {
+	private final FluidStorageHandler source;
+	private final FluidStorageHandler target;
 	private boolean simulate = false;
 	private boolean disabled = false;
 
-	FluidTransaction(FluidStorageContext source, FluidStorageContext target) {
+	FluidTransaction(FluidStorageHandler source, FluidStorageHandler target) {
 		this.source = source;
 		this.target = target;
 	}

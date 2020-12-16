@@ -5,18 +5,20 @@ import io.github.boogiemonster1o1.nomcfluids.api.util.Result;
 import io.github.boogiemonster1o1.nomcfluids.api.util.Side;
 import io.github.boogiemonster1o1.nomcfluids.api.fraction.Fraction;
 
-public class FluidStorageContext {
+public class FluidStorageHandler {
 	private final FluidStorage storage;
 	private final FluidType fluidType;
+	private final boolean valid;
 	private boolean simulate = false;
 	private Side side = Side.UNKNOWN;
 
-	public FluidStorageContext(FluidStorage storage, FluidType fluidType) {
+	public FluidStorageHandler(FluidStorage storage, FluidType fluidType) {
 		this.storage = storage;
 		this.fluidType = fluidType;
+		this.valid = storage.isValid(fluidType);
 	}
 
-	public FluidStorageContext simulate() {
+	public FluidStorageHandler simulate() {
 		this.simulate = true;
 		return this;
 	}
@@ -26,6 +28,9 @@ public class FluidStorageContext {
 	}
 
 	public Fraction extract(Fraction amount) {
+		if (!this.valid) {
+			return Fraction.ZERO;
+		}
 		Fraction stored = this.storage.getStored(this.fluidType, this.side);
 		Fraction maxExtracted = amount.isGreaterThan(stored) ? amount : stored;
 		Fraction maxOutput = this.storage.getMaxOutput(this.fluidType, this.side);
@@ -37,8 +42,11 @@ public class FluidStorageContext {
 	}
 
 	public Fraction insert(Fraction amount) {
+		if (!this.valid) {
+			return Fraction.ZERO;
+		}
 		Fraction stored = this.storage.getStored(this.fluidType, this.side);
-		Fraction maxMinus = this.storage.getMaxFluidVolume(this.fluidType).withSubtraction(stored);
+		Fraction maxMinus = this.storage.getMaxFluidVolume(this.fluidType, this.side).withSubtraction(stored);
 		Fraction maxInserted = maxMinus.isGreaterThan(amount) ? amount : maxMinus;
 		Fraction maxInput = this.storage.getMaxInput(this.fluidType, this.side);
 		Fraction inserted = maxInserted.isGreaterThan(maxInput) ? maxInput : maxInserted;
@@ -49,10 +57,13 @@ public class FluidStorageContext {
 	}
 
 	public Result set(Fraction amount) {
+		if (!this.valid) {
+			return Result.FAILURE;
+		}
 		if (amount.isNegative()) {
 			amount = Fraction.ZERO;
 		}
-		Fraction max = this.storage.getMaxFluidVolume(this.fluidType);
+		Fraction max = this.storage.getMaxFluidVolume(this.fluidType, this.side);
 		if (amount.isGreaterThan(max)) {
 			amount = max;
 		}
@@ -63,30 +74,45 @@ public class FluidStorageContext {
 	}
 
 	public Fraction getMaxInput() {
+		if (!this.valid) {
+			return Fraction.ZERO;
+		}
 		Fraction maxInput = this.storage.getMaxInput(this.fluidType, this.side);
-		Fraction maxInserted = this.storage.getMaxFluidVolume(this.fluidType).withSubtraction(this.storage.getStored(this.fluidType, this.side));
+		Fraction maxInserted = this.storage.getMaxFluidVolume(this.fluidType, this.side).withSubtraction(this.storage.getStored(this.fluidType, this.side));
 		return maxInput.isLessThan(maxInserted) ? maxInput : maxInserted;
 	}
 
 	public Fraction getMaxOutput() {
+		if (!this.valid) {
+			return Fraction.ZERO;
+		}
 		Fraction maxOutput = this.storage.getMaxOutput(this.fluidType, this.side);
 		Fraction maxExtracted = this.storage.getStored(this.fluidType, this.side);
 		return maxOutput.isLessThan(maxExtracted) ? maxOutput : maxExtracted;
 	}
 
 	public Fraction getStored() {
+		if (!this.valid) {
+			return Fraction.ZERO;
+		}
 		return this.storage.getStored(this.fluidType, this.side);
 	}
 
 	public Fraction getMaxFluidVolume() {
-		return this.storage.getMaxFluidVolume(this.fluidType);
+		if (!this.valid) {
+			return Fraction.ZERO;
+		}
+		return this.storage.getMaxFluidVolume(this.fluidType, this.side);
 	}
 
-	public FluidTransaction into(FluidStorageContext target) {
+	public FluidTransaction into(FluidStorageHandler target) {
+		if (!this.valid) {
+			return new EmptyFluidTransaction();
+		}
 		return new FluidTransaction(this, target);
 	}
 
-	public FluidStorageContext side(Side side) {
+	public FluidStorageHandler side(Side side) {
 		this.side = side;
 		return this;
 	}
