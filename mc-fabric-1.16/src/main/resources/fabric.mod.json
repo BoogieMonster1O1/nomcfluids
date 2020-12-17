@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "nomcfluids",
+  "name": "NMCF",
+  "version": "${version}",
+  "description": "Version Independent Fluid API",
+  "license": "Apache-2.0",
+  "authors": [
+    "BoogieMonster1O1"
+  ]
+}

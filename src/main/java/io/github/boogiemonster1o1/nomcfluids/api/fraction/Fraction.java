@@ -42,24 +42,6 @@ public class Fraction extends Number implements Comparable<Fraction> {
 		this.normalize();
 	}
 
-//	/**
-//	 * Deserializes an new instance from an NBT tag previously returned by {@link #toTag()}.
-//	 *
-//	 * @param tag NBT tag previously returned by {@link #toTag()
-//	 */
-//	public Fraction(Tag tag) {
-//		readTagInner((CompoundTag) tag);
-//	}
-//
-//	/**
-//	 * Deserializes a new instance from previously encoded to a packet buffer by {@link #writeBuffer(PacketByteBuf)}
-//	 *
-//	 * @param buf packet buffer containing data encoded by {@link #writeBuffer(PacketByteBuf)}
-//	 */
-//	public Fraction(PacketByteBuf buf) {
-//		readBufferInner(buf);
-//	}
-
 	public Fraction(long whole) {
 		this(whole, 0, 1);
 	}
@@ -107,41 +89,6 @@ public class Fraction extends Number implements Comparable<Fraction> {
 		return this.divisor;
 	}
 
-//	/**
-//	 * Serializes this instance to the given packet buffer.
-//	 *
-//	 * @param buffer packet buffer to receive serialized data
-//	 */
-//	public final void writeBuffer(PacketByteBuf buffer) {
-//		buffer.writeVarLong(whole);
-//		buffer.writeVarLong(numerator);
-//		buffer.writeVarLong(divisor);
-//	}
-
-//	/**
-//	 * Serializes this instance in an NBT compound tag without
-//	 * creating a new tag instance. This is meant for use cases
-//	 * (mostly internal to Fluidity) where key collision is not a risk.
-//	 *
-//	 * @param tag NBT tag to contain serialized data
-//	 */
-//	public final void writeTag(CompoundTag tag) {
-//		tag.putLong("whole", whole);
-//		tag.putLong("numerator", numerator);
-//		tag.putLong("denominator", divisor);
-//	}
-
-//	/**
-//	 * Serializes this instance to a new NBT tag.
-//	 *
-//	 * @return new tag instance containing serialized data
-//	 */
-//	public final Tag toTag() {
-//		final CompoundTag result = new CompoundTag();
-//		writeTag(result);
-//		return result;
-//	}
-//
 //	protected final void readBufferInner(PacketByteBuf buf) {
 //		whole = buf.readVarLong();
 //		numerator = buf.readVarLong();

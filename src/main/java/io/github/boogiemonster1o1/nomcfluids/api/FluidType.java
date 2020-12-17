@@ -5,8 +5,8 @@ import java.util.Objects;
 import io.github.boogiemonster1o1.nomcfluids.api.settings.FluidSettings;
 
 public class FluidType {
-	private final String id;
-	private final FluidSettings settings;
+	protected final String id;
+	protected final FluidSettings settings;
 
 	FluidType(String id, FluidSettings settings) {
 		this.id = id;

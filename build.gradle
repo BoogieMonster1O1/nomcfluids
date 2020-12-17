@@ -1,81 +1,85 @@
 plugins {
-    id 'java-library'
-    id 'idea'
-    id 'fabric-loom' version '0.5-SNAPSHOT' apply false
+	id 'java-library'
+	id 'idea'
+	id 'fabric-loom' version '0.5-SNAPSHOT' apply false
 }
 
 archivesBaseName = archivesBaseName + "-api"
 
 allprojects {
-    apply plugin: 'java'
+	apply plugin: 'java'
 
-    group = 'io.github.boogiemonster1o1'
-    version = '0.1.0'
+	group = 'io.github.boogiemonster1o1'
+	version = '0.1.0'
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
 
-    compileJava {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
+	compileJava {
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
+	}
 
-    repositories {
-        mavenCentral()
-        jcenter()
-        maven {
-            name = 'Fabric'
-            url = 'http://maven.fabricmc.net/'
-        }
-        maven {
-            name = 'SpongePowered'
-            url = 'http://repo.spongepowered.org/maven'
-        }
-        maven {
-            name = 'mojang'
-            url = 'https://libraries.minecraft.net/'
-        }
-        maven {
-            name = 'legacy-fabric'
-            url = 'https://dl.bintray.com/legacy-fabric/Legacy-Fabric-Maven'
-        }
-    }
+	repositories {
+		mavenCentral()
+		jcenter()
+		maven {
+			name = 'Fabric'
+			url = 'http://maven.fabricmc.net/'
+		}
+		maven {
+			name = 'SpongePowered'
+			url = 'http://repo.spongepowered.org/maven'
+		}
+		maven {
+			name = 'mojang'
+			url = 'https://libraries.minecraft.net/'
+		}
+		maven {
+			name = 'legacy-fabric'
+			url = 'https://dl.bintray.com/legacy-fabric/Legacy-Fabric-Maven'
+		}
+	}
 
-    dependencies {
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    }
+	dependencies {
+		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	}
 
-    tasks.named('test') {
-        useJUnitPlatform()
-    }
+	tasks.named('test') {
+		useJUnitPlatform()
+	}
 
-    tasks.withType(JavaCompile).configureEach {
-        // ensure that the encoding is set to UTF-8, no matter what the system default is
-        // this fixes some edge cases with special characters not displaying correctly
-        // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-        // If Javadoc is generated, this must be specified in that task too.
-        it.options.encoding = "UTF-8"
-    }
+	tasks.withType(JavaCompile).configureEach {
+		// ensure that the encoding is set to UTF-8, no matter what the system default is
+		// this fixes some edge cases with special characters not displaying correctly
+		// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+		// If Javadoc is generated, this must be specified in that task too.
+		it.options.encoding = "UTF-8"
+	}
 
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${project.archivesBaseName}"}
-        }
-    }
+	jar {
+		from("LICENSE") {
+			rename { "${it}_${project.archivesBaseName}"}
+		}
+	}
 }
 
 subprojects {
-    archivesBaseName = "${rootProject.name}-${project.name}"
+	archivesBaseName = "${rootProject.name}-${project.name}"
 
-    processResources {
-        inputs.property "version", project.version
+	dependencies {
+		implementation rootProject
+	}
 
-        filesMatching("fabric.mod.json") {
-            expand "version": project.version
-            it.with {
-                it.open().markSupported()
-            }
-        }
-    }
+	processResources {
+		inputs.property "version", project.version
+
+		filesMatching("fabric.mod.json") {
+			expand "version": project.version
+			it.with {
+				it.open().markSupported()
+			}
+		}
+	}
 }
