@@ -1,1 +1,5 @@
 rootProject.name = 'nomcfluids'
+
+include 'fabric-inf-20100618'
+include 'fabric-1.8.9'
+include 'fabric-1.16'

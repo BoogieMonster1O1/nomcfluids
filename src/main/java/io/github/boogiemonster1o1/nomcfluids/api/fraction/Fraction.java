@@ -10,6 +10,7 @@ public class Fraction extends Number implements Comparable<Fraction> {
 	public static final Fraction ONE_THIRD = Fraction.of(0, 1,3);
 	public static final Fraction HALF = Fraction.of(0, 1, 2);
 	public static final Fraction ONE = Fraction.of(1, 0, 1);
+	public static final Fraction ONE_HUNDRED = Fraction.of(100, 0, 1);
 	public static final Fraction ONE_THOUSAND = Fraction.of(1000, 0, 1);
 	public static final Fraction MAX_VALUE = Fraction.of(Long.MAX_VALUE, 0, 1);
 
@@ -384,6 +385,21 @@ public class Fraction extends Number implements Comparable<Fraction> {
 	public final Fraction withAddition(Fraction diff) {
 		final MutableFraction f = new MutableFraction(this);
 		f.add(diff);
+		return f.toImmutable();
+	}
+
+	/**
+	 * Returns a new value equal to this value multiplied by the given parameter.
+	 *
+	 * This method is allocating and for frequent and repetitive operations
+	 * it will be preferable to use a mutable fraction instance.
+	 *
+	 * @param diff value to be multiplied by this value
+	 * @return a new value equal to this value multiplied by the given parameter
+	 */
+	public final Fraction withMultiplication(Fraction diff) {
+		final MutableFraction f = new MutableFraction(this);
+		f.multiply(diff);
 		return f.toImmutable();
 	}
 
