@@ -5,6 +5,16 @@ package io.github.boogiemonster1o1.nomcfluids.api.settings;
  */
 public interface TemperatureUnits {
 	int ROOM_TEMPERATURE = 20;
-	int WATER_BOILING_POINT = 100;
-	int WATER_FREEZING_POINT = 0;
+
+	// Metals' melting points
+	int COPPER = 1085;
+	int ALUMINIUM = 660;
+	int LEAD = 378;
+	int IRON = 1204;
+	int TIN = 232;
+	int ZINC = 420;
+	int NICKEL = 1453;
+	int SILVER = 962;
+	int PLATINUM = 1768;
+	int GOLD = 1064;
 }
