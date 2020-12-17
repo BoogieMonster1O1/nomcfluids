@@ -1,5 +1,27 @@
+pluginManagement {
+    repositories {
+        jcenter()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        gradlePluginPortal()
+        maven {
+            name = 'Jitpack'
+            url = 'https://jitpack.io'
+        }
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "fabric-loom" && !requested.version?.endsWith("-SNAPSHOT")) {
+                useModule("com.github.Chocohead.Fabric-Loom:fabric-loom:${requested.version}")
+            }
+        }
+    }
+}
+
 rootProject.name = 'nomcfluids'
 
-include 'fabric-inf-20100618'
-include 'fabric-1.8.9'
-include 'fabric-1.16'
+//include 'mc-fabric-inf-20100618'
+//include 'mc-fabric-1.8.9'
+include 'mc-fabric-1.16'
