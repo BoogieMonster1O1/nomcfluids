@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FluidTransactionTest {
 	@Test
-	public void testSingleTransaction() {
+	public void testSingleFluidTransaction() {
 		Fraction max = new Fraction(1000);
 		Fraction twenty = new Fraction(20);
 		FluidType water = new FluidType("water", FluidSettings.builder().luminance(0).color(Color.BLUE).build());
