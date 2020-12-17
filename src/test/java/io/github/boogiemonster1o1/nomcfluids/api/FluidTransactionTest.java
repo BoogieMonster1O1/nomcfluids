@@ -60,13 +60,12 @@ public class FluidTransactionTest {
 
 		FluidContainer first = new FluidContainer(Fraction.ONE_THOUSAND);
 		FluidContainer second = new FluidContainer(Fraction.ZERO);
-		long setStart = System.nanoTime();
 		FluidHandlers.of(first, water).set(Fraction.ONE_HUNDRED);
-		System.out.println("Setting: " + (System.nanoTime() - setStart));
 		assertEquals(FluidHandlers.of(first, water).getStored().longValue(), 100L);
 		long moveStart = System.nanoTime();
 		FluidHandlers.of(first, water).into(FluidHandlers.of(second, water)).move();
-		System.out.println("Moving: " + (System.nanoTime() - moveStart));
+		long moveEnd = System.nanoTime() - moveStart;
+		System.out.println("Moving: " + moveEnd);
 		assertEquals(80L, FluidHandlers.of(first, water).getStored().longValue());
 		assertEquals(20L, FluidHandlers.of(second, water).getStored().longValue());
 	}
