@@ -2,11 +2,19 @@ package io.github.boogiemonster1o1.nomcfluids.api.store;
 
 import io.github.boogiemonster1o1.nomcfluids.api.fraction.Fraction;
 
+/**
+ * An {@code EmptyFluidTransaction} is a kind of transaction that
+ * does not insert nor extract fluid from any of its fluid handlers.
+ * It merely prints an error message and the current stacktrace.
+ */
 public class EmptyFluidTransaction extends FluidTransaction {
 	EmptyFluidTransaction() {
 		super(null, null);
 	}
 
+	/**
+	 * @return {@link Fraction#ZERO}
+	 */
 	@Override
 	public Fraction move() {
 		System.err.println("Attempted to move fluid in an empty transaction");
@@ -16,6 +24,9 @@ public class EmptyFluidTransaction extends FluidTransaction {
 		return Fraction.ZERO;
 	}
 
+	/**
+	 * @return {@link Fraction#ZERO}
+	 */
 	@Override
 	public Fraction move(Fraction amount) {
 		System.err.println("Attempted to move fluid in an empty transaction");

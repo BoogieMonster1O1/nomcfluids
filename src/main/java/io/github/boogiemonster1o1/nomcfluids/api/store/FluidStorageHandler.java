@@ -1,9 +1,8 @@
 package io.github.boogiemonster1o1.nomcfluids.api.store;
 
 import io.github.boogiemonster1o1.nomcfluids.api.FluidType;
-import io.github.boogiemonster1o1.nomcfluids.api.util.Result;
-import io.github.boogiemonster1o1.nomcfluids.api.util.Side;
 import io.github.boogiemonster1o1.nomcfluids.api.fraction.Fraction;
+import io.github.boogiemonster1o1.nomcfluids.api.util.Side;
 
 /**
  * A wrapper around a {@link FluidStorage} that allows for various
@@ -100,9 +99,9 @@ public class FluidStorageHandler {
 	 * @param amount the amount of fluid
 	 * @return whether the transaction was successful
 	 */
-	public Result set(Fraction amount) {
+	public boolean set(Fraction amount) {
 		if (!this.valid) {
-			return Result.FAILURE;
+			return false;
 		}
 		if (amount.isNegative()) {
 			amount = Fraction.ZERO;
@@ -112,9 +111,9 @@ public class FluidStorageHandler {
 			amount = max;
 		}
 		if (this.shouldPerform()) {
-			return this.storage.setStored(this.fluidType, this.side, amount);
+			this.storage.setStored(this.fluidType, this.side, amount);
 		}
-		return Result.SUCCESS;
+		return true;
 	}
 
 	/**
@@ -198,14 +197,7 @@ public class FluidStorageHandler {
 	 * @param amount the amount of fluid to consume
 	 * @return whether the consumption was a success
 	 */
-	public Result consume(Fraction amount) {
-		Fraction stored = this.getStored();
-		if (stored.isGreaterThanOrEqual(amount)) {
-			if (this.shouldPerform()) {
-				this.set(stored.withSubtraction(amount));
-			}
-			return Result.SUCCESS;
-		}
-		return Result.FAILURE;
+	public boolean consume(Fraction amount) {
+		return this.set(this.getStored().withSubtraction(amount));
 	}
 }

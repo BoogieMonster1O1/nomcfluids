@@ -5,8 +5,7 @@ import java.util.Objects;
 /**
  * Immutable, full-resolution rational number representation.
  */
-@SuppressWarnings({"CopyConstructorMissesField", "unused"})
-public class Fraction implements Comparable<Fraction> {
+public class Fraction extends Number implements Comparable<Fraction> {
 	public static final Fraction ZERO = Fraction.of(0, 0, 1);
 	public static final Fraction ONE_THIRD = Fraction.of(0, 1,3);
 	public static final Fraction HALF = Fraction.of(0, 1, 2);
@@ -303,6 +302,26 @@ public class Fraction implements Comparable<Fraction> {
 		return result == 0 ? Long.compare(this.numerator() * o.divisor(), o.numerator() * this.divisor()) : result;
 	}
 
+	@Override
+	public int intValue() {
+		return (int) this.longValue();
+	}
+
+	@Override
+	public long longValue() {
+		return this.toLong(1);
+	}
+
+	@Override
+	public float floatValue() {
+		return (float) this.doubleValue();
+	}
+
+	@Override
+	public double doubleValue() {
+		return this.toDouble();
+	}
+
 	public final boolean isGreaterThan(Fraction other) {
 		return this.compareTo(other) > 0;
 	}
@@ -317,17 +336,6 @@ public class Fraction implements Comparable<Fraction> {
 
 	public final boolean isLessThanOrEqual(Fraction other) {
 		return this.compareTo(other) <= 0;
-	}
-
-	/**
-	 * Ensures this instance is safe to retain. Should always be
-	 * called for any {@code Fraction} instance that will be retained
-	 * unless the instance is already known to be immutable.
-	 *
-	 * @return a new immutable {@code Fraction} instance if this is a {@code MutableFraction}, or this instance otherwise.
-	 */
-	Fraction toImmutable() {
-		return this;
 	}
 
 	/**
@@ -391,7 +399,6 @@ public class Fraction implements Comparable<Fraction> {
 		return new Fraction(whole);
 	}
 
-	@SuppressWarnings({"unused", "UnusedReturnValue"})
 	private static final class MutableFraction extends Fraction {
 		public MutableFraction() {
 			super();
@@ -536,31 +543,13 @@ public class Fraction implements Comparable<Fraction> {
 			return this;
 		}
 
-		/**
-		 * Rounds down to multiple of divisor if not already divisible by it.
-		 *
-		 * @param divisor Desired multiple
-		 */
 		public void roundDown(long divisor) {
 			if(this.divisor != divisor) {
 				this.set(this.whole, this.numerator * divisor / this.divisor, divisor);
 			}
 		}
 
-		public static MutableFraction of(long whole, long numerator, long divisor) {
-			return new MutableFraction(whole, numerator, divisor);
-		}
-
-		public static MutableFraction of(long numerator, long divisor) {
-			return new MutableFraction(numerator, divisor);
-		}
-
-		public static MutableFraction of(long whole) {
-			return new MutableFraction(whole);
-		}
-
-		@Override
-		Fraction toImmutable() {
+		public Fraction toImmutable() {
 			return Fraction.of(this.whole(), this.numerator(), this.divisor());
 		}
 	}

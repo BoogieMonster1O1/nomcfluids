@@ -1,12 +1,12 @@
 package io.github.boogiemonster1o1.nomcfluids.api;
 
 import java.awt.Color;
+import java.util.function.BiConsumer;
 
 import io.github.boogiemonster1o1.nomcfluids.api.fraction.Fraction;
 import io.github.boogiemonster1o1.nomcfluids.api.settings.FluidSettings;
 import io.github.boogiemonster1o1.nomcfluids.api.store.FluidRate;
 import io.github.boogiemonster1o1.nomcfluids.api.store.FluidStorage;
-import io.github.boogiemonster1o1.nomcfluids.api.util.Result;
 import io.github.boogiemonster1o1.nomcfluids.api.util.Side;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +25,8 @@ public class FluidTransactionTest {
 			}
 
 			@Override
-			public Result setStored(FluidType type, Side side, Fraction amount) {
-				return null;
+			public void setStored(FluidType type, Side side, Fraction amount) {
+
 			}
 
 			@Override
@@ -52,6 +52,11 @@ public class FluidTransactionTest {
 						return twenty;
 					}
 				};
+			}
+
+			@Override
+			public void forEach(BiConsumer<FluidType, Fraction> consumer, Side side) {
+
 			}
 		}
 	}
